@@ -1,0 +1,39 @@
+// Derivative via Secant -> Tangent Line (.anim v2)
+scene { bg: #030712 -> #0C142B, tonemap: agx, fps: 60, blur: 1 }
+
+f(x) = 0.35 * x * x - 0.4 * x + 0.6
+x0 := 0.8
+dx := 1.6
+
+title = text("Secant -> Tangent Line", 0.50).pos(0, 3.1).fill(WHITE)
+eq    = $f(x) = 0.35 x^2 - 0.4 x + 0.6$.pos(3.2, 2.1).fill(#93C5FD)
+note  = $m_"sec" = (f(x_0 + Delta x) - f(x_0)) / (Delta x) -> f'(x_0)$.pos(3.2, 1.1).fill(#FDE047)
+
+ax    = axes(x: -2..4:1, y: 0..5:1, size: (5.8, 4.4), ticks: true).pos(-2.2, -0.3)
+curve = ax.plot(x => f(x), x: -1.6..3.7, samples: 80).stroke(TEAL, 3.5)
+
+p0 := ax(x0, f(x0))
+p1 := ax(x0 + dx, f(x0 + dx))
+
+// Extended secant/tangent line passing through p0 and p1
+unit := norm(p1 - p0)
+ln  = line(p0 - unit * 2.2, p0 + unit * 2.2).stroke(#F59E0B, 3.0)
+d0  = dot(pos: p0, r: 0.11).fill(#38BDF8).glow(0.8)
+d1  = dot(pos: p1, r: 0.10).fill(#F97316).glow(0.8)
+
+// Right triangle showing dx and dy
+corner := (p1.x, p0.y)
+dx_ln = line(p0, corner).stroke(#94A3B8, 2.0)
+dy_ln = line(corner, p1).stroke(#4ADE80, 2.0)
+
+lbl_dx = text("dx =", 0.32).pos(2.2, -0.2).fill(#94A3B8)
+val_dx = decimal(dx, 2).pos(3.2, -0.2).fill(#FDE047)
+
+play fade_in(title, ax)
+play(0.9s) { create(curve); write(eq) }
+play(0.8s) { grow(d0, d1); create(ln, dx_ln, dy_ln); fade_in(note, lbl_dx, val_dx) }
+~0.4
+play(2.4s, rate: smooth) { dx -> 0.02 }
+~0.5
+play(1.6s, rate: smooth) { x0 -> 2.3 }
+~0.6

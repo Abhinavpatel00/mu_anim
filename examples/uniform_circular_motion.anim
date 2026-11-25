@@ -1,0 +1,58 @@
+// Uniform Circular Motion — Calculus Derivation in .anim
+
+scene {
+    bg: #000000 -> #050812,
+    tonemap: agx,
+    fps: 60,
+    blur: 2,
+    aberration: 0.35,
+    grain: 0.001
+}
+
+C  = (-3.35, -0.22)
+R  = 1.92
+th := 0.55
+
+// Reactive kinematics (auto-compiled into topological updater DAG)
+u   := (cos(th), sin(th))
+t   := (-sin(th), cos(th))
+p   := C + R * u
+vt  := p + 1.46 * t
+a_t := p - 1.12 * u
+
+// Objects & fluent styling
+title = text("Uniform Circular Motion: Calculus Derivation", 0.44).pos(0, 3.08).glow(0.22)
+ax    = axes(x: -2.5..2.5:1, y: -2.5..2.5:1, size: (4.7, 4.7), ticks: true, tips: true).pos(C).stroke(#738CB88C, 1.6)
+circ  = circle(R).pos(C).stroke(#8CA6CC66, 1.8).dash(14, 10, 0)
+card  = round_rect(5.9, 5.3, 0.2).pos(3.05, -0.22, -0.1).fill(#04060EE6).stroke(#5280C7CC, 2.0)
+
+p_dot = dot(pos: p, r: 0.11).fill(#F9E26B).glow(0.95)
+trail = traced_path(p_dot, #F9E26B, 3.0, 72)
+r_vec = arrow(C, p).color(#38BDF8).stroke(3.4)
+v_vec = arrow(p, vt).color(#4ADE80).stroke(3.4)
+a_vec = arrow(p, a_t).color(#FB7185).stroke(4.2)
+arc_t = arc(0.46, 0.0, th).pos(C).stroke(#F59E0B, 2.2)
+perp  = right_angle(p - 0.22 * u, p, p + 0.22 * t, 0.20).stroke(#F59E0B, 2.0)
+
+lbl_r = $bold(r)(t)$.scale(0.52).pos(C + 0.44 * R * u - 0.30 * t).color(#38BDF8)
+lbl_v = $bold(v)(t)$.scale(0.52).pos(vt + 0.32 * t + 0.24 * u).color(#4ADE80)
+lbl_a = $bold(a)(t)$.scale(0.52).pos(p - 0.56 * 1.12 * u + 0.32 * t).color(#FB7185)
+
+eq1 = tex(`bold(r)(t) = R mat(delim: "[", cos(omega t); sin(omega t))`, size: 0.90).pos(3.05, 1.55).color(#38BDF8)
+eq2 = tex(`bold(v)(t) = (d bold(r))/(d t) = R omega mat(delim: "[", -sin(omega t); cos(omega t))`, size: 0.84).pos(3.05, -0.10).color(#4ADE80)
+eq3 = tex(`bold(a)(t) = (d bold(v))/(d t) = -omega^2 bold(r)(t)`, size: 0.72).pos(3.05, -1.75).color(#FB7185)
+
+hl_v  = tex(`v = norm(bold(v)(t)) = omega R`, size: 0.54).pos(3.05, 0.90).color(#4ADE80)
+hl_ac = tex(`a_c = norm(bold(a)(t)) = omega^2 R = v^2 / R`, size: 0.66).pos(3.05, -0.52).color(#FB7185)
+
+// Synchronized choreography
+play(1.0s)         { write(title); fade_in(ax, card); create(circ) }
+play(2.4s)         { grow(p_dot); show(trail); grow_arrow(r_vec); create(arc_t); fade_in(lbl_r); write(eq1); th -> 1.45 }
+play(2.8s)         { grow_arrow(v_vec); create(perp); fade_in(lbl_v); write(eq2); camera -> camera(pos: (-0.15, 0.05, 8.75), target: (0,0,0)); th -> 2.65 }
+play(1.3s, linear) { circumscribe(eq2, #4ADE80); th -> 3.45 }
+play(2.9s)         { camera -> default; grow_arrow(a_vec); fade_in(lbl_a); write(eq3); th -> 5.20 }
+play(1.8s, linear) { circumscribe(eq3, #FB7185); th -> 7.10 }
+play(0.6s)         { fade_out(eq1, eq2, eq3) }
+play(2.0s)         { write(hl_v, hl_ac); camera -> camera(pos: (0.20, -0.05, 9.35), target: (0,0,0)); th -> 8.40 }
+play(1.6s)         { frame(hl_v, #4ADE80); frame(hl_ac, #F9E26B); th -> 9.65 }
+~0.3

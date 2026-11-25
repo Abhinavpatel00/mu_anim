@@ -1,0 +1,209 @@
+// Matrix Multiplication in Graphics Programming (.anim v2)
+// A visual lecture: transforms, homogeneous coordinates, MVP chain.
+// Render with: ./anim_dsl examples/lecture_matrix.anim --shot frame.png --time N
+//             or: ./anim_dsl examples/lecture_matrix.anim --video lecture.mp4
+
+scene { bg: #030712 -> #0C142B, tonemap: agx, fps: 60, blur: 2 }
+
+// ========================================================================
+// Act 1 - A point is a column vector  (0:00 - 0:45)
+// ========================================================================
+
+title   = text("Matrix Multiplication in Graphics", 0.88).pos(0, 2.7).fill(WHITE).glow(0.6)
+sub     = text("Transforms  -  Homogeneous Coordinates  -  MVP Chain", 0.38).pos(0, 1.5).fill(GREY)
+
+play(1.4s) { write(title); fade_in(sub) }
+~0.5
+
+// A single point drawn as a column vector [2; 1]
+pt      = dot(pos: (2, 1), r: 0.14).fill(YELLOW).glow(1.0)
+v_txt   = tex(`mat(delim: "[", 2; 1)`, size: 0.55).pos(3.8, 0.0).color(WHITE)
+
+play(1.0s) { grow(pt); write(v_txt) }
+~0.4
+
+note1   = text("Everything in graphics starts as a point -", 0.42).pos(-4.2, -2.2).fill(GREY)
+note1b  = text("a column vector.", 0.42).pos(-1.0, -2.2).fill(WHITE)
+play(1.0s) { fade_in(note1, note1b) }
+~1.2
+play(0.8s) { fade_out(note1, note1b) }
+
+// ========================================================================
+// Act 2 - Scaling: diagonal matrix stretches axes  (0:45 - 1:45)
+// ========================================================================
+
+S_txt   = tex(`mat(delim: "[", 2 0; 0 1.5)`, size: 0.55).pos(-3.2, 0.4).fill(TEAL)
+S_lbl   = text("S", 0.50).pos(-3.9, 0.4).fill(TEAL)
+
+play(1.2s) { write(S_txt); fade_in(S_lbl) }
+~0.4
+
+tS      := 0.0
+pS      := (2 + 2 * tS, 1 + 0.5 * tS)
+ptS     = dot(pos: pS, r: 0.14).fill(GOLD).glow(1.0)
+lineS   = line((2, 1), pS).stroke(TEAL, 1.5).dash(8, 6, 0)
+
+play(1.5s) { grow(ptS); create(lineS); tS -> 1.0 }
+~0.5
+
+v_res   = tex(`mat(delim: "[", 4; 1.5)`, size: 0.55).pos(4.6, 0.0).color(GOLD)
+eqS     = text("S * [2; 1]  =  [4; 1.5]", 0.42).pos(4.6, -0.9).color(GOLD)
+
+play(1.0s) { write(v_res); write(eqS) }
+~1.0
+play(1.0s) { fade_out(S_txt, S_lbl, ptS, lineS, v_res, eqS) }
+
+// ========================================================================
+// Act 3 - Rotation matrix  (1:45 - 3:00)
+// ========================================================================
+
+circ    = circle(1.0).stroke(TEAL, 1.5)
+i_hat   = arrow((0, 0), (1, 0)).color(RED).stroke(3.0)
+j_hat   = arrow((0, 0), (0, 1)).color(BLUE).stroke(3.0)
+
+R_txt   = tex(`mat(delim: "[", cos(theta) -sin(theta); sin(theta) cos(theta))`, size: 0.50).pos(-3.6, 0.4).fill(WHITE)
+R_lbl   = text("R(theta)", 0.50).pos(-4.3, 0.4).fill(WHITE)
+
+play(1.2s) { create(circ, i_hat, j_hat); write(R_txt); fade_in(R_lbl) }
+~0.4
+
+th      := 0.0
+p0      := (1.0, 0.3)
+p_rot   := (p0[0] * cos(th) - p0[1] * sin(th), p0[0] * sin(th) + p0[1] * cos(th))
+dot_r   = dot(pos: p_rot, r: 0.10).fill(GOLD).glow(0.9)
+trace   = traced_path(dot_r, GREY, 1.5, 100)
+
+lbl_rot = text("R(theta) rotates the basis - columns are where i-hat and j-hat land.", 0.36).pos(0, -2.6).fill(GREY)
+
+play(1.0s) { grow(dot_r); create(trace); fade_in(lbl_rot) }
+~0.4
+play(2.6s, rate: smooth) { th -> 1.5708 }
+~0.8
+play(1.0s) { fade_out(circ, i_hat, j_hat, R_txt, R_lbl, dot_r, trace, lbl_rot) }
+
+// ========================================================================
+// Act 4 - Translation needs homogeneous coordinates  (3:00 - 4:15)
+// ========================================================================
+
+bad_eq  = tex(`[a b; c d] [x; y] = [x + tx; y + ty]`, size: 0.50).pos(0, 1.0).fill(RED)
+x_mark  = cross(bad_eq, 3.0).color(RED).stroke(4.0)
+
+play(1.0s) { write(bad_eq); grow(x_mark) }
+~0.8
+play(0.8s) { fade_out(bad_eq, x_mark) }
+
+h_txt   = tex(`mat(delim: "[", x; y; 1)`, size: 0.55).pos(1.4, 0.0).fill(WHITE)
+T_txt   = tex(`mat(delim: "[", 1 0 tx; 0 1 ty; 0 0 1)`, size: 0.55).pos(-3.0, 0.0).fill(TEAL)
+T_lbl   = text("T(tx, ty)", 0.44).pos(-3.9, 0.0).fill(TEAL)
+
+play(1.2s) { write(h_txt); write(T_txt); fade_in(T_lbl) }
+~0.4
+res_h   = tex(`mat(delim: "[", x + tx; y + ty; 1)`, size: 0.55).pos(4.2, 0.0).color(GOLD)
+play(1.0s) { write(res_h) }
+~1.0
+play(0.8s) { fade_out(h_txt, T_txt, T_lbl, res_h) }
+
+note2   = text("We pretend 2D lives on the plane z = 1 inside 3D.", 0.40).pos(0, -2.6).fill(GREY)
+play(1.0s) { fade_in(note2) }
+~1.2
+play(0.8s) { fade_out(note2) }
+
+// ========================================================================
+// Act 5 - Composing transforms: order matters  (4:15 - 5:45)
+// ========================================================================
+
+sq1     = rect(1.1, 1.1).pos(-3.6, 0.0).fill(#60A5FA).stroke(#60A5FA, 2.0)
+sq2     = rect(1.1, 1.1).pos(3.6, 0.0).fill(PURPLE).stroke(GOLD, 2.0)
+
+lbl_rt  = text("Rotate -> Translate", 0.34).pos(-3.6, 1.6).fill(#60A5FA)
+lbl_tr  = text("Translate -> Rotate", 0.34).pos(3.6, 1.6).fill(GOLD)
+
+play(1.0s) { create(sq1, sq2); write(lbl_rt, lbl_tr) }
+~0.4
+
+t_rt    := 0.0
+t_tr    := 0.0
+
+play(2.4s) { t_rt -> 1.0; t_tr -> 1.0 }
+~0.6
+
+eq_order = text("T * R * v   !=   R * T * v    (order matters)", 0.46).pos(0, -2.6).fill(WHITE)
+play(1.0s) { write(eq_order) }
+~1.2
+play(0.8s) { fade_out(sq1, sq2, lbl_rt, lbl_tr, eq_order) }
+
+// ========================================================================
+// Act 6 - 3D: the Model-View-Projection chain  (5:45 - 7:45)
+// ========================================================================
+
+torus   = torus(1.6, 0.6, 32, 32).stroke(TEAL, 2.0)
+cube    = cube(1.4).pos(2.6, 0, 0).fill(PURPLE).stroke(GOLD, 2.0)
+
+play(1.4s) { create(torus, cube) }
+~0.5
+
+mvp_txt = tex(`MVP = P * V * M`, size: 0.56).pos(0, 2.2).fill(WHITE)
+shader  = text("gl_Position = MVP * vertex", 0.48).pos(0, 1.1).fill(GOLD)
+
+play(1.4s) { write(mvp_txt); write(shader) }
+~0.5
+
+M_txt   = tex(`mat(delim: "[", m11 m12 m13 m14; m21 m22 m23 m24; m31 m32 m33 m34; 0 0 0 1)`, size: 0.30).pos(-4.6, 1.6).fill(#60A5FA)
+V_txt   = tex(`mat(delim: "[", v11 v12 v13 v14; v21 v22 v23 v24; v31 v32 v33 v34; 0 0 0 1)`, size: 0.30).pos(-4.6, 0.6).fill(#60A5FA)
+P_txt   = tex(`mat(delim: "[", p11 p12 p13 p14; p21 p22 p23 p24; p31 p32 p33 p34; 0 0 0 1)`, size: 0.30).pos(-4.6, -0.4).fill(#60A5FA)
+
+play(1.0s) { write(M_txt, V_txt, P_txt) }
+~1.0
+
+frust   = frustum3d(60, 16/9, 0.1, 10, (0, 0, 0), (0, 0, -1)).stroke(GREY, 1.5)
+w_div   = text("divide by w -> perspective", 0.38).pos(0, -2.4).fill(GREY)
+
+play(1.0s) { create(frust); fade_in(w_div) }
+~1.2
+play(1.0s) { fade_out(torus, cube, mvp_txt, shader, M_txt, V_txt, P_txt, frust, w_div) }
+
+// ========================================================================
+// Act 7 - Normals need the inverse-transpose  (7:45 - 8:45)
+// ========================================================================
+
+sphere  = sphere(1.0).fill(TEAL, 0.7).stroke(WHITE, 1.0)
+
+n_eq    = tex(`n^{\prime} = normalize((M^{-1})^{T} * n)`, size: 0.60).pos(0, -1.6).fill(WHITE)
+
+play(1.2s) { create(sphere); write(n_eq) }
+~0.4
+~0.4
+
+n_bad   = arrow((0.7, 0.7, 0), (1.2, 1.1, 0)).color(RED).stroke(3.0)
+n_good  = arrow((0.7, 0.7, 0), (0.35, 1.4, 0)).color(GREEN).stroke(3.0)
+
+play(1.0s) { grow(n_bad, n_good) }
+~1.2
+play(0.8s) { fade_out(sphere, n_bad, n_good, n_eq) }
+
+// ========================================================================
+// Act 8 - Summary  (8:45 - 10:00)
+// ========================================================================
+
+takeaway = text("Matrix multiplication = function composition.", 0.62).pos(0, 1.4).fill(WHITE)
+takeaway2= text("Rightmost transform applies first.  Bake MVP -> multiply every vertex.", 0.44).pos(0, 0.5).fill(GREY)
+
+play(1.4s) { write(takeaway); write(takeaway2) }
+~1.6
+
+tbl_hdr = text("Op      2D          3D/4D", 0.36).pos(-3.4, -1.0).fill(GREY)
+tbl_t   = text("Translate  3x3 homog   4x4", 0.34).pos(-3.4, -1.45).fill(WHITE)
+tbl_r   = text("Rotate     2x2         3x3 / 4x4", 0.34).pos(-3.4, -1.9).fill(WHITE)
+tbl_s   = text("Scale      diag       diag", 0.34).pos(-3.4, -2.35).fill(WHITE)
+tbl_p   = text("Project    -         4x4 persp", 0.34).pos(-3.4, -2.8).fill(WHITE)
+
+play(1.2s) { write(tbl_hdr, tbl_t, tbl_r, tbl_s, tbl_p) }
+~2.0
+
+play(1.0s) { fade_out(takeaway, takeaway2, tbl_hdr, tbl_t, tbl_r, tbl_s, tbl_p) }
+
+// Outro
+logo    = text("mu_anim", 0.90).pos(0, 0).fill(WHITE).glow(0.8)
+play(1.4s) { write(logo) }
+~1.2
+play(1.0s) { fade_out(logo) }

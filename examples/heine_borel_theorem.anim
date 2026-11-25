@@ -1,0 +1,241 @@
+// Visual Proof of the Heine-Borel Theorem (.anim v2)
+scene { bg: #030712 -> #0C1426, tonemap: agx, fps: 60, bloom: 0.36, blur: 1 }
+
+// ------------------------------------------------------------------ Helpers
+open_interval(x0, x1, y, col) = group(line((x0 + 0.08, y), (x1 - 0.08, y)).stroke(col, 4.5), circle(0.085).pos(x0, y).fill(#040B1A).stroke(col, 2.8), circle(0.085).pos(x1, y).fill(#040B1A).stroke(col, 2.8))
+
+closed_interval(x0, x1, y, col) = group(line((x0, y), (x1, y)).stroke(col, 6.0), dot((x0, y), 0.095, col), dot((x1, y), 0.095, col))
+
+x_mark(x, y, sz, col) = group(line((x - sz, y - sz), (x + sz, y + sz)).stroke(col, 3.8), line((x - sz, y + sz), (x + sz, y - sz)).stroke(col, 3.8))
+
+// --------------------------------------------------------- Persistent Header
+title    = markup("<b>Heine–Borel Theorem</b>", 0.48).pos(0, 3.24).z(20)
+sub      = markup("A subset <span color='#38BDF8'>K ⊂ ℝ</span> is <span color='#FACC15'>Compact</span>  ⟺  <span color='#34D399'>Closed</span> and <span color='#A855F7'>Bounded</span>", 0.25).pos(0, 2.74).z(20)
+hdr_line = line((-5.9, 2.46), (5.9, 2.46)).stroke(#1E293B, 1.8).z(10)
+
+// ------------------------------------------------------------ Footer Banner
+foot_box = round_rect(11.8, 0.84, 0.14).pos(0, -2.96).fill(#091121, 0.92).stroke(#1E293B, 1.8).z(15)
+f1  = markup("<b>Compactness:</b>  Every open cover <span color='#A855F7'>U = {Uα}</span> of <span color='#38BDF8'>[a, b]</span> has a <span color='#34D399'>finite subcover</span>.", 0.24).pos(0, -2.96).z(16)
+f2  = markup("<b>Why both hypotheses?</b>  Removing <span color='#F43F5E'>Closed</span> or <span color='#F59E0B'>Bounded</span> breaks compactness.", 0.24).pos(0, -2.96).z(16)
+f3  = markup("<b>Proof by Contradiction:</b>  Assume an open cover <span color='#A855F7'>U</span> has <span color='#F43F5E'>NO finite subcover</span> of I₀ = [a, b].", 0.23).pos(0, -2.96).z(16)
+f4  = markup("<b>Bisection Step:</b>  Cut I₀ in half. At least one half <span color='#FACC15'>I₁</span> must also lack a finite subcover!", 0.23).pos(0, -2.96).z(16)
+f5  = markup("<b>Nested Limit (Completeness):</b>  I₀ ⊃ I₁ ⊃ I₂ ⊃ ⋯ shrinks to a point <span color='#FACC15'>x* ∈ [a, b]</span>.", 0.23).pos(0, -2.96).z(16)
+f6  = markup("<b>Contradiction!</b>  Some <span color='#34D399'>U* ∈ U</span> contains x*, and for large n, <span color='#34D399'>Iₙ ⊂ U*</span> (covered by 1 set!).  <span color='#FACC15'>∎ Q.E.D.</span>", 0.22).pos(0, -2.96).z(16)
+
+// ============================================================================
+// ACT 1 (0.0s - 7.0s): Open Cover -> Finite Subcover of [a, b]
+// ============================================================================
+nl1    = number_line(-1, 5, 1, 9.6, true).pos(0, -0.30).z(2)
+k_seg  = line((-3.2, -0.30), (3.2, -0.30)).stroke(#38BDF8, 8.5).glow(0.35).z(4)
+dot_a  = dot((-3.2, -0.30), 0.115, #38BDF8).z(6)
+dot_b  = dot((3.2, -0.30), 0.115, #38BDF8).z(6)
+lbl_a  = markup("<b>a</b>", 0.28).pos(-3.2, -0.76).fill(#38BDF8).z(6)
+lbl_b  = markup("<b>b</b>", 0.28).pos(3.2, -0.76).fill(#38BDF8).z(6)
+brc_r  = line((-3.2, -1.04), (3.2, -1.04))
+k_brc  = brace(brc_r, (0, -1, 0), 0.22).stroke(#38BDF8, 2.4).z(5)
+k_lbl  = markup("K = [a, b]  <span color='#94A3B8'>(closed & bounded)</span>", 0.25).pos(0, -1.96).fill(#E0F2FE).z(6)
+
+u1 = open_interval(-3.95, -1.15, 0.44, #34D399).glow(0.25).z(5)
+u2 = open_interval(-1.65,  0.65, 0.90, #38BDF8).glow(0.25).z(5)
+u3 = open_interval( 0.25,  2.15, 0.44, #A855F7).glow(0.25).z(5)
+u4 = open_interval( 1.65,  3.95, 0.90, #FACC15).glow(0.25).z(5)
+u5 = open_interval(-3.55, -2.15, 1.38, #64748B).z(4)
+u6 = open_interval(-0.35,  1.45, 1.38, #64748B).z(4)
+
+u1_t = markup("U₁", 0.22).pos(-2.55, 0.68).fill(#34D399).z(6)
+u2_t = markup("U₂", 0.22).pos(-0.50, 1.14).fill(#38BDF8).z(6)
+u3_t = markup("U₃", 0.22).pos( 1.20, 0.68).fill(#A855F7).z(6)
+u4_t = markup("U₄", 0.22).pos( 2.80, 1.14).fill(#FACC15).z(6)
+u5_t = markup("U₅", 0.20).pos(-2.85, 1.60).fill(#94A3B8).z(6)
+u6_t = markup("U₆", 0.20).pos( 0.55, 1.60).fill(#94A3B8).z(6)
+
+cov_badge = markup("<span color='#34D399'>Finite Subcover:</span>  [a, b] ⊂ U₁ ∪ U₂ ∪ U₃ ∪ U₄", 0.26).pos(0, 2.00).z(8)
+
+play(0.9s) {
+    fade_in(title, sub, hdr_line, foot_box, f1)
+    create(nl1)
+}
+play(1.0s, rate: smooth) {
+    create(k_seg)
+    grow(dot_a, dot_b)
+    fade_in(lbl_a, lbl_b, k_brc, k_lbl)
+}
+play(1.2s, rate: smooth) {
+    create(u1, u2, u3, u4, u5, u6)
+    fade_in(u1_t, u2_t, u3_t, u4_t, u5_t, u6_t)
+}
+~0.4
+play(1.1s, rate: smooth) {
+    set_opacity(u5, 0.16)
+    set_opacity(u6, 0.16)
+    set_opacity(u5_t, 0.18)
+    set_opacity(u6_t, 0.18)
+    fade_in(cov_badge)
+    indicate(cov_badge, 1.04, #34D399)
+}
+~1.4
+play(0.7s) {
+    fade_out(nl1, k_seg, dot_a, dot_b, lbl_a, lbl_b, k_brc, k_lbl, cov_badge, f1)
+    fade_out(u1, u2, u3, u4, u5, u6, u1_t, u2_t, u3_t, u4_t, u5_t, u6_t)
+}
+
+// ============================================================================
+// ACT 2 (7.0s - 14.8s): Counterexamples — Why Closed AND Bounded Are Necessary
+// ============================================================================
+pl_box = round_rect(5.7, 4.15, 0.16).pos(-3.15, 0.05).fill(#081020, 0.82).stroke(#F43F5E, 1.8).z(2)
+pl_hdr = markup("<span color='#FB7185'>✗ Not Closed:</span>  K = (0, 1]", 0.29).pos(-3.15, 1.72).z(6)
+pl_ax  = line((-5.45, -0.55), (-0.85, -0.55)).stroke(#475569, 2.5).z(3)
+pl_k   = line((-5.05, -0.55), (-1.25, -0.55)).stroke(#38BDF8, 6.5).z(4)
+pl_op0 = circle(0.095).pos(-5.05, -0.55).fill(#081020).stroke(#FB7185, 3.0).z(6)
+pl_cl1 = dot((-1.25, -0.55), 0.095, #38BDF8).z(6)
+pl_l0  = text("0", 0.22).pos(-5.05, -0.92).fill(#FB7185).z(6)
+pl_l1  = text("1", 0.22).pos(-1.25, -0.92).fill(#38BDF8).z(6)
+
+c_u2 = open_interval(-3.15, -0.95, 0.05, #A855F7).z(5)
+c_u3 = open_interval(-3.78, -0.95, 0.42, #38BDF8).z(5)
+c_u4 = open_interval(-4.10, -0.95, 0.79, #34D399).z(5)
+c_u6 = open_interval(-4.42, -0.95, 1.16, #FACC15).z(5)
+c_ul = markup("Uₙ = (1/n, 2)", 0.21).pos(-2.35, 1.38).fill(#CBD5E1).z(6)
+
+pl_gap  = line((-5.05, -0.55), (-4.42, -0.55)).stroke(#F43F5E, 8.0).glow(0.5).z(7)
+pl_vdas = dashed(line((-4.42, 1.25), (-4.42, -0.70))).stroke(#F43F5E, 1.8).z(5)
+pl_note = markup("Finite subcover stops at <span color='#FB7185'>1/N &gt; 0</span>\n<span color='#F43F5E'>Leaves (0, 1/N] uncovered!</span>", 0.20).pos(-3.15, -1.55).z(6)
+pl_x    = x_mark(-4.73, -0.15, 0.16, #F43F5E).z(9)
+
+pr_box = round_rect(5.7, 4.15, 0.16).pos(3.15, 0.05).fill(#081020, 0.82).stroke(#F59E0B, 1.8).z(2)
+pr_hdr = markup("<span color='#FBBF24'>✗ Not Bounded:</span>  K = [0, ∞)", 0.29).pos(3.15, 1.72).z(6)
+pr_ax  = line((0.75, -0.55), (5.55, -0.55)).stroke(#475569, 2.5).z(3)
+pr_k   = arrow((1.15, -0.55), (5.45, -0.55)).stroke(#38BDF8, 6.5).z(4)
+pr_cl0 = dot((1.15, -0.55), 0.095, #38BDF8).z(6)
+pr_l0  = text("0", 0.22).pos(1.15, -0.92).fill(#38BDF8).z(6)
+pr_inf = text("∞", 0.26).pos(5.55, -0.88).fill(#38BDF8).z(6)
+
+b_u1 = open_interval(0.75, 2.25, 0.05, #A855F7).z(5)
+b_u2 = open_interval(0.75, 3.25, 0.50, #38BDF8).z(5)
+b_u3 = open_interval(0.75, 4.25, 0.95, #34D399).z(5)
+b_ul = markup("Uₙ = (−1, n)", 0.21).pos(2.45, 1.32).fill(#CBD5E1).z(6)
+
+pr_gap  = arrow((4.25, -0.55), (5.45, -0.55)).stroke(#F59E0B, 8.0).glow(0.5).z(7)
+pr_vdas = dashed(line((4.25, 1.05), (4.25, -0.70))).stroke(#F59E0B, 1.8).z(5)
+pr_note = markup("Finite subcover stops at <span color='#FBBF24'>max n = M</span>\n<span color='#F59E0B'>Leaves [M, ∞) uncovered!</span>", 0.20).pos(3.15, -1.55).z(6)
+pr_x    = x_mark(4.80, -0.15, 0.16, #F59E0B).z(9)
+
+play(0.9s) {
+    fade_in(f2, pl_box, pl_hdr, pl_ax, pl_k, pl_op0, pl_cl1, pl_l0, pl_l1)
+    fade_in(pr_box, pr_hdr, pr_ax, pr_k, pr_cl0, pr_l0, pr_inf)
+}
+play(1.2s, rate: smooth) {
+    create(c_u2, c_u3, c_u4, c_u6, b_u1, b_u2, b_u3)
+    fade_in(c_ul, b_ul)
+}
+~0.3
+play(1.2s, rate: smooth) {
+    create(pl_gap, pl_vdas, pr_gap, pr_vdas)
+    fade_in(pl_note, pr_note)
+    grow(pl_x, pr_x)
+}
+~2.3
+play(0.8s) {
+    fade_out(f2, pl_box, pl_hdr, pl_ax, pl_k, pl_op0, pl_cl1, pl_l0, pl_l1)
+    fade_out(c_u2, c_u3, c_u4, c_u6, c_ul, pl_gap, pl_vdas, pl_note, pl_x)
+    fade_out(pr_box, pr_hdr, pr_ax, pr_k, pr_cl0, pr_l0, pr_inf)
+    fade_out(b_u1, b_u2, b_u3, b_ul, pr_gap, pr_vdas, pr_note, pr_x)
+}
+
+// ============================================================================
+// ACT 3 (14.8s - 32.5s): Bisection Contradiction Proof on [a, b]
+// ============================================================================
+nl2   = number_line(-1, 5, 1, 9.6, true).pos(0, 1.15).z(2)
+k2    = line((-3.2, 1.15), (3.2, 1.15)).stroke(#38BDF8, 8.5).glow(0.3).z(4)
+d2_a  = dot((-3.2, 1.15), 0.11, #38BDF8).z(6)
+d2_b  = dot((3.2, 1.15), 0.11, #38BDF8).z(6)
+l2_a  = markup("<b>a</b>", 0.25).pos(-3.2, 1.48).fill(#38BDF8).z(6)
+l2_b  = markup("<b>b</b>", 0.25).pos(3.2, 1.48).fill(#38BDF8).z(6)
+
+i0_bar = closed_interval(-3.2, 3.2, 0.45, #FB7185).glow(0.25).z(5)
+i0_lbl = markup("<b>I₀ = [a, b]</b>  <span color='#FDA4AF'>(assume NO finite subcover)</span>", 0.22).pos(-0.3, 0.72).z(6)
+
+m0_das = dashed(line((0.0, 1.25), (0.0, -0.25))).stroke(#94A3B8, 2.0).z(4)
+m0_lbl = markup("m₀", 0.22).pos(-0.18, 1.48).fill(#CBD5E1).z(6)
+
+i1_left = closed_interval(-3.2, -0.06, -0.10, #475569).z(4)
+i1_bar  = closed_interval(0.0, 3.2, -0.10, #FACC15).glow(0.35).z(6)
+i1_lbl  = markup("<b>I₁</b> <span color='#FDE68A'>(NO subcover)</span>", 0.20).pos(4.35, -0.10).z(6)
+
+lem_box = round_rect(4.75, 1.40, 0.14).pos(-3.65, -0.95).fill(#0B1426, 0.88).stroke(#334155, 1.6).z(4)
+lem_txt = markup("<b>Why at least one half fails:</b>\nIf both halves had finite subcovers,\ntheir union would cover I₀!\n<span color='#38BDF8'>|Iₙ| = (b − a) / 2ⁿ → 0</span>", 0.19).pos(-3.65, -0.95).z(6)
+
+i2_bar = closed_interval(0.0, 1.6, -0.60, #F59E0B).glow(0.35).z(6)
+i2_lbl = markup("<b>I₂</b>  <span color='#94A3B8'>(length L/4)</span>", 0.20).pos(2.75, -0.60).z(6)
+
+i3_bar = closed_interval(0.8, 1.6, -1.08, #F472B6).glow(0.35).z(6)
+i3_lbl = markup("<b>I₃</b>  <span color='#94A3B8'>(length L/8)</span>", 0.20).pos(2.75, -1.08).z(6)
+
+i4_bar = closed_interval(0.8, 1.2, -1.56, #38BDF8).glow(0.45).z(7)
+i4_lbl = markup("<b>I₄</b>  <span color='#7DD3FC'>(length L/16)</span>", 0.20).pos(2.75, -1.56).z(7)
+
+xs_beam = dashed(line((1.07, 1.15), (1.07, -1.80))).stroke(#FACC15, 2.2).z(5)
+xs_dot  = dot((1.07, 1.15), 0.125, #FACC15).glow(0.6).z(10)
+xs_co   = callout((1.07, 1.15), (-2.15, 2.02), "x* ∈ ⋂ Iₙ ⊂ [a, b]", #FACC15).z(11)
+
+ustar_band = rect(1.36, 3.30).pos(1.07, -0.15).fill(#10B981, 0.15).stroke(#34D399, 1.8).z(3)
+ustar_int  = open_interval(0.39, 1.75, 1.62, #34D399).glow(0.5).z(9)
+ustar_lead = line((1.75, 1.66), (2.25, 1.92)).stroke(#34D399, 1.8).z(9)
+ustar_lbl  = markup("<b>U* = (x* − ε, x* + ε) ∈ U</b>", 0.22).pos(3.85, 1.96).fill(#34D399).z(10)
+contra_tag = markup("<b>I₄ ⊂ U*</b>  →  covered by <b>1</b> set!", 0.22).pos(1.07, -2.08).fill(#34D399).z(10)
+
+qed_box = round_rect(4.75, 0.62, 0.14).pos(-3.65, -2.14).fill(#064E3B, 0.40).stroke(#34D399, 1.8).z(8)
+qed_txt = markup("<b>Q.E.D.</b>  [a, b] has a finite subcover ∎", 0.21).pos(-3.65, -2.14).fill(#6EE7B7).z(9)
+
+play(0.9s) {
+    fade_in(f3)
+    create(nl2, k2)
+    grow(d2_a, d2_b)
+    fade_in(l2_a, l2_b)
+}
+play(1.0s, rate: smooth) {
+    create(i0_bar)
+    fade_in(i0_lbl)
+}
+~0.4
+play(1.2s, rate: smooth) {
+    fade_out(f3)
+    fade_in(f4, m0_lbl, lem_box, lem_txt)
+    create(m0_das, i1_left, i1_bar)
+    fade_in(i1_lbl)
+}
+~0.4
+play(1.6s, rate: smooth) {
+    create(i2_bar)
+    fade_in(i2_lbl)
+}
+play(1.2s, rate: smooth) {
+    create(i3_bar)
+    fade_in(i3_lbl)
+}
+play(1.2s, rate: smooth) {
+    create(i4_bar)
+    fade_in(i4_lbl)
+}
+~0.4
+play(1.3s, rate: smooth) {
+    fade_out(f4)
+    fade_in(f5)
+    create(xs_beam)
+    grow(xs_dot)
+    focus_on((1.07, 1.15), #FACC15, 0.45)
+    fade_in(xs_co)
+}
+~0.7
+play(1.4s, rate: smooth) {
+    fade_out(f5)
+    fade_in(f6, ustar_band, ustar_lbl)
+    create(ustar_int, ustar_lead)
+}
+~0.3
+play(1.3s, rate: smooth) {
+    fade_in(contra_tag, qed_box, qed_txt)
+    circumscribe(i4_bar, #34D399, 0.14)
+    indicate(contra_tag, 1.08, #FACC15)
+}
+~2.6

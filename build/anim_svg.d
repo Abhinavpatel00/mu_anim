@@ -1,0 +1,36 @@
+build/anim_svg.o: anim_svg.c anim_internal.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_macros.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_common.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_math.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_easing.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_simd.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_id_pool.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_sort.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_toposort.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_files.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_save.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_vm_arena.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_vm.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_time.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_log.h \
+ third_party/mugfx/desktop/external/mu_lib/mu/mu_input.h anim.h \
+ third_party/stb/stb_truetype.h third_party/stb/stb_image.h
+anim_internal.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_macros.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_common.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_math.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_easing.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_simd.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_id_pool.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_sort.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_toposort.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_files.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_save.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_vm_arena.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_vm.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_time.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_log.h:
+third_party/mugfx/desktop/external/mu_lib/mu/mu_input.h:
+anim.h:
+third_party/stb/stb_truetype.h:
+third_party/stb/stb_image.h:

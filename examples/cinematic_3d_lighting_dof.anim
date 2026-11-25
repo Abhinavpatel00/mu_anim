@@ -1,0 +1,57 @@
+// Cinematic 3D Studio Lighting, Fog & Depth of Field (.anim v2)
+scene {
+    bg: #020617 -> #0F172A,
+    tonemap: agx,
+    fps: 60,
+    bloom: 0.48,
+    dof_aperture: 5.5,
+    dof_focus: 7.0,
+    dof_range: 1.9
+}
+
+clear_lights()
+add_light("directional", (0.55, 0.85, 0.45), #FFF7ED, 1.15)
+add_light("point", (-3.0, 2.2, 3.2), #38BDF8, 2.8)
+add_light("point", (3.2, -1.5, 2.5), #EC4899, 2.4)
+ambient_light(#1E293B, 0.9)
+set_fog(#060B19, 6.0, 22.0, 0.06, false)
+
+hud_title = markup("<b>PBR Studio Lighting</b> · Fog · <span color='#38BDF8'>Depth of Field</span>", 0.42).pos(0, 3.25).bg_stroke(#020617, 5.0).fixed_in_frame(true).z(20)
+hud_sub   = text("4-Light GGX + Linear Depth Fog + 12-Tap Bokeh CoC", 0.24).pos(0, 2.74).fill(#CBD5E1).bg_stroke(#020617, 5.0).fixed_in_frame(true).z(20)
+
+wave_surf = surface3d((u, v) => (u, v, 0.45 * sin(u * 1.6) * cos(v * 1.6)), u: -3.2..3.2, v: -2.4..2.4, nu: 36, nv: 36).fill(#1E3A8A).wireframe(14.0, 0.45).roughness(0.28).pos(0, -1.5, -2.2).rot(-1.05, (1, 0, 0))
+tor       = torus(1.05, 0.36, 36, 20).checkerboard(#0EA5E9, #0F172A, 16, 8).roughness(0.20).pos(-1.9, 0.25, 1.1).rot(0.55, (1, 0.25, 0))
+ico       = polyhedron(4, 0.88).fill(#F59E0B).roughness(0.22).glow(0.35).pos(1.65, 0.3, 0.9)
+sp_bg     = sphere(1.25, 28, 18).fill(#A855F7).wireframe(10.0, 0.35).roughness(0.30).pos(0.2, 0.8, -5.5)
+
+st2d = star(5, 0.72, 0.33).fill(#38BDF8).stroke(#E0F2FE, 2.0)
+extr = extrude(st2d, 0.36, #F472B6).pos(-0.15, -0.45, 2.4)
+
+show(wave_surf, sp_bg)
+
+play(0.9s) {
+    fade_in(hud_title, hud_sub)
+    tumble_in(tor, (-2.5, 2.0, -2.0), TAU)
+    tumble_in(ico, (2.5, 2.0, -2.0), TAU)
+    grow(extr)
+}
+~0.4
+play(2.4s, rate: smooth) {
+    rotating(tor, TAU * 0.75, (0.4, 1.0, 0.2))
+    rotating(ico, -TAU * 0.85, (0.2, 1.0, 0.4))
+    rotating(extr, TAU, (0, 1, 0.3))
+    pulse_glow(ico, 0.95, 1.12)
+}
+~0.3
+play(1.8s, rate: smooth) {
+    swirl_3d(sp_bg, 1.4, (0, 1, 0))
+    rotating(tor, PI, (0, 1, 0))
+    camera_to(pos: (1.4, 0.6, 8.3), target: (0.0, 0.0, 0.0))
+}
+~0.4
+play(1.8s, rate: smooth) {
+    camera_to(pos: (0.0, 0.0, 8.0), target: (0.0, 0.0, 0.0))
+    rotating(tor, PI, (1, 0.5, 0))
+    rotating(ico, PI, (0, 1, 0.3))
+}
+~0.5

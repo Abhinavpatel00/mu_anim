@@ -1,0 +1,126 @@
+// Text & Math Animations Showcase (.anim)
+scene {
+    bg: #030712 -> #0D1630,
+    tonemap: agx,
+    fps: 60,
+    blur: 2,
+    aberration: 0.25
+}
+
+hdr = text("mu_anim Text & Math Animations", 0.52).pos(0, 3.15).fill(WHITE).glow(0.35)
+sub = text("1. Entrances", 0.34).pos(0, 2.55).fill(#94A3B8)
+
+// ---- Stage 1: Entrances (6 clean tiles) ----
+l1 = text("write()", 0.24).pos(-3.8, 1.85).fill(#64748B)
+t1 = text("Stroke & Fill", 0.44).pos(-3.8, 1.30).fill(#38BDF8)
+
+l2 = text("draw_border_then_fill()", 0.24).pos(0.0, 1.85).fill(#64748B)
+t2 = text("Outline First", 0.44).pos(0.0, 1.30).fill(#4ADE80)
+
+l3 = text("type_with_cursor()", 0.24).pos(3.8, 1.85).fill(#64748B)
+t3 = text("Typewriter!", 0.44).pos(3.8, 1.30).fill(#FDE047)
+
+l4 = text("fade_in(shift)", 0.24).pos(-3.8, -0.35).fill(#64748B)
+t4 = text("Slide + Fade", 0.44).pos(-3.8, -0.90).fill(#F472B6)
+
+l5 = text("spin_in()", 0.24).pos(0.0, -0.35).fill(#64748B)
+t5 = text("Spin From 0", 0.44).pos(0.0, -0.90).fill(#A78BFA)
+
+l6 = text("show_subsets()", 0.24).pos(3.8, -0.35).fill(#64748B)
+t6 = text("Glyph by Glyph", 0.44).pos(3.8, -0.90).fill(#FB923C)
+
+play(0.8s) { write(hdr); fade_in(sub, l1, l2, l3, l4, l5, l6) }
+play(1.6s) {
+    write(t1)
+    draw_border_then_fill(t2)
+    type_with_cursor(t3, #FDE047)
+}
+play(1.4s) {
+    fade_in(t4, (0, -0.55), 0.9)
+    spin_in(t5, TAU)
+    show_subsets(t6)
+}
+~0.6
+
+// ---- Stage 2: Emphasis & Deformations ----
+sub2 = text("2. Emphasis & Deformations", 0.34).pos(0, 2.55).fill(#94A3B8)
+play(0.5s) {
+    fade_out(t1, t2, t3, t4, t5, t6, l1, l2, l3, l4, l5, l6)
+    fade_out(sub, (0, 0.2), 0.95)
+    fade_in(sub2, (0, -0.2), 0.95)
+}
+
+e1l = text("indicate()", 0.24).pos(-3.8, 1.85).fill(#64748B)
+e1  = text("Pop & Tint", 0.44).pos(-3.8, 1.30).fill(#38BDF8)
+
+e2l = text("circumscribe()", 0.24).pos(0.0, 1.85).fill(#64748B)
+e2  = text("Highlight Box", 0.44).pos(0.0, 1.30).fill(#4ADE80)
+
+e3l = text("passing_flash()", 0.24).pos(3.8, 1.85).fill(#64748B)
+e3  = text("Sweep Flash", 0.44).pos(3.8, 1.30).fill(#FDE047)
+
+e4l = text("wiggle()", 0.24).pos(-3.8, -0.35).fill(#64748B)
+e4  = text("Wiggle!", 0.44).pos(-3.8, -0.90).fill(#F472B6)
+
+e5l = text("pulse_glow()", 0.24).pos(0.0, -0.35).fill(#64748B)
+e5  = text("Bloom Pulse", 0.44).pos(0.0, -0.90).fill(#A78BFA)
+
+e6l = text("apply_wave()", 0.24).pos(3.8, -0.35).fill(#64748B)
+e6  = text("Sine Wave", 0.44).pos(3.8, -0.90).fill(#FB923C)
+
+play(0.7s) { fade_in(e1l, e2l, e3l, e4l, e5l, e6l, e1, e2, e3, e4, e5, e6) }
+play(1.6s) {
+    indicate(e1, 1.25, #FDE047)
+    circumscribe(e2, #4ADE80, 0.16)
+    passing_flash(e3, 0.30)
+}
+play(1.6s) {
+    wiggle(e4, 1.18, 0.12)
+    pulse_glow(e5, 1.3, 1.15)
+    apply_wave(e6, (0, 1), 0.22)
+}
+~0.5
+
+// ---- Stage 3: Math Morphs, Code, Counters & 3D Text ----
+sub3 = text("3. Math Morphs, Counters & 3D Text", 0.34).pos(0, 2.55).fill(#94A3B8)
+play(0.5s) {
+    fade_out(e1l, e2l, e3l, e4l, e5l, e6l, e1, e2, e3, e4, e5, e6)
+    fade_out(sub2, (0, 0.2), 0.95)
+    fade_in(sub3, (0, -0.2), 0.95)
+}
+
+m1l = text("transform_matching_tex()", 0.24).pos(-3.1, 1.85).fill(#64748B)
+eq_a = tex(["a^2", "+", "b^2", "=", "c^2"], size: 0.72).pos(-3.1, 1.15).color(#38BDF8)
+eq_b = tex(["c^2", "-", "a^2", "=", "b^2"], size: 0.72).pos(-3.1, 1.15).color(#4ADE80)
+
+m2l = text("flip_replace_3d()", 0.24).pos(3.1, 1.85).fill(#64748B)
+f_a = text("Front Side", 0.46).pos(3.1, 1.15).fill(#FDE047)
+f_b = text("Flipped 3D!", 0.46).pos(3.1, 1.15).fill(#F472B6)
+
+m3l = text("tumble_in() + swirl_3d()", 0.24).pos(-3.1, -0.45).fill(#64748B)
+m3  = text("3D Tumble", 0.46).pos(-3.1, -1.15).fill(#A78BFA)
+
+m4l = text("reactive decimal()", 0.24).pos(3.1, -0.45).fill(#64748B)
+cnt := 0.0
+m4  = decimal(cnt, 1, 0.56).pos(3.1, -1.15).fill(#FB923C)
+
+play(0.8s) {
+    fade_in(m1l, m2l, m3l, m4l)
+    write(eq_a)
+    fade_in(f_a, m4)
+    tumble_in(m3, (-2, 2, -2), TAU, (1, 1, 0))
+}
+~0.3
+play(1.6s) {
+    transform_matching_tex(eq_a, eq_b)
+    flip_replace_3d(f_a, f_b, (0, 1, 0))
+    swirl_3d(m3, 1.4, (0, 1, 0))
+    cnt -> 100.0
+}
+~0.5
+play(1.1s) {
+    unwrite(eq_b)
+    unwrite(hdr)
+    fade_out(sub3, m1l, m2l, m3l, m4l, f_b, m3, m4)
+}
+~0.2

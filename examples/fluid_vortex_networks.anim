@@ -1,0 +1,40 @@
+// Animated Dipole Streamlines, Force-Directed Graph & Pixel Interference (.anim v2)
+scene { bg: #030712 -> #0B1324, tonemap: agx, fps: 60, bloom: 0.45, blur: 1 }
+
+fixed_dt(1.0 / 60.0)
+
+title = markup("<span color='#38BDF8'>Fluid Dipole</span> · Spring Graph · <span color='#FACC15'>Wave Grid</span>", 0.44).pos(0, 3.32).bg_stroke(#020617, 5.0).z(15)
+plane = number_plane(-3.5, 3.5, -2.5, 2.5).pos(-2.35, -0.25).scale(0.82)
+
+dipole(x, y, z) = (-(y - 0.9) / ((x * x + (y - 0.9) * (y - 0.9)) + 0.35) + (y + 0.9) / ((x * x + (y + 0.9) * (y + 0.9)) + 0.35), x / ((x * x + (y - 0.9) * (y - 0.9)) + 0.35) - x / ((x * x + (y + 0.9) * (y + 0.9)) + 0.35), 0)
+
+streams = animated_stream_lines(plane, dipole, -3.2..3.2, -2.2..2.2, dx: 0.55, dy: 0.55, max_steps: 36, flow_speed: 1.8)
+
+c_top = callout((-2.35, 0.48), (-4.7, 1.85), "+Vortex Core", #38BDF8).z(12)
+c_bot = callout((-2.35, -0.98), (-4.7, -2.25), "-Vortex Core", #F472B6).z(12)
+dim_v = dimension_line((-2.35, -0.98), (-2.35, 0.48), 1.65, "d = 1.46", #FACC15).z(12)
+
+pa     = pixel_array(24, 24, (x, y) => rgb(0.5 + 0.5 * sin(x * 0.45 + y * 0.25), 0.4 + 0.5 * cos((x - 12) * 0.35 - (y - 12) * 0.35), 0.75 + 0.25 * sin((x - y) * 0.4)), height: 2.2).pos(3.55, 1.45)
+pa_box = surrounding_rect(pa, 0.08, 0.06).stroke(#FACC15, 2.0)
+pa_lbl = text("PixelArray (24x24)", 0.22).pos(3.55, 0.12).fill(#FACC15)
+
+edges  = [[0,1], [1,2], [2,3], [3,0], [0,4], [1,5], [2,6], [3,7], [4,5], [5,6], [6,7], [7,4]]
+gl     = graph_layout(8, edges, layout: "spring", labels: ["0","1","2","3","4","5","6","7"], width: 3.6, height: 2.4).pos(3.55, -1.65).glow(0.25)
+gl_lbl = text("Spring Force-Directed Graph", 0.22).pos(3.55, -3.15).fill(#38BDF8)
+
+play(0.9s) {
+    fade_in(title, plane, pa, pa_box, pa_lbl)
+    create(streams)
+}
+~0.4
+play(1.2s, rate: smooth) {
+    fade_in(c_top, c_bot, dim_v)
+    grow(gl)
+    fade_in(gl_lbl)
+}
+~1.5
+play(2.0s, rate: smooth) {
+    rotating(gl, PI * 0.5, (0, 0, 1))
+    indicate(pa_box, 1.04, #38BDF8)
+}
+~1.8

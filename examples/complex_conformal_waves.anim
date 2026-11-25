@@ -1,0 +1,46 @@
+// Complex Conformal Mapping & Phase Flow (.anim v2)
+scene { bg: #030712 -> #0F172A, tonemap: agx, fps: 60, bloom: 0.45, blur: 1 }
+
+title = markup("Conformal Map: <span color='#38BDF8'>f(z) = 0.22 z² + 0.55 z</span>", 0.44).pos(0, 3.28).bg_stroke(#020617, 4.0).z(10)
+sub   = text("Non-linear ComplexPlane + Gradient Cutout + Phase Flow", 0.23).pos(0, 2.78).fill(#94A3B8).z(10)
+
+cp = complex_plane(-2.2, 2.2, -1.6, 1.6).prepare_nonlinear(4).scale(0.68).pos(-2.55, -0.35).clip_rect((-5.6, -3.1, 0), (0.55, 2.25, 0))
+cp_box = rect(6.15, 5.35).pos(-2.52, -0.42).stroke(#1E293B, 1.8).z(-1)
+
+ring_outer = circle(1.22)
+ring_inner = circle(0.52)
+ann = cutout(ring_outer, [ring_inner]).gradient_stops([#38BDF8, #A855F7, #F472B6], (-1.2, -1.2), (1.2, 1.2)).stroke(#E0F2FE, 2.5).glow(0.35).pos(3.05, -0.45)
+
+z_dot = labeled_dot("z", 0.24, #0EA5E9, WHITE).pos(3.05, 1.45)
+badge = integer(2, 0.42).pos(4.65, 1.45).fill(#FACC15)
+co    = callout((-2.55, -0.35), (-4.4, 1.55), "z = 0 (critical pt)", #38BDF8).z(9)
+
+cf(re, im) = (-2.55 + 0.22 * ((re + 2.55) * (re + 2.55) - (im + 0.35) * (im + 0.35)) + 0.55 * (re + 2.55), -0.35 + 0.44 * (re + 2.55) * (im + 0.35) + 0.55 * (im + 0.35))
+vortex(x, y, z) = (-y - 0.15 * x, x - 0.15 * y, 0)
+
+save_state(z_dot)
+
+play(0.8s) {
+    fade_in(title, sub, cp, cp_box)
+    create(ann)
+    grow(z_dot, badge)
+}
+~0.3
+play(2.2s, rate: smooth) {
+    apply_complex(cp, cf)
+    rotating(ann, TAU * 0.75)
+    shift(z_dot, (1.4, -1.8, 0))
+    fade_in(co)
+}
+~0.3
+play(1.0s, rate: smooth) {
+    restore(z_dot)
+    swap(z_dot, badge)
+    blink(ann, 2)
+}
+~0.2
+play(2.0s, rate: smooth) {
+    phase_flow(ann, vortex, 0.55)
+    indicate(co, 1.08, #FACC15)
+}
+~0.5
